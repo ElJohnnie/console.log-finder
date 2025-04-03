@@ -42,6 +42,18 @@ To scan a specific directory:
 npx find-console-log /path/to/your/project
 ```
 
+or make your local command
+
+```bash
+
+{
+  "scripts": {
+    "find-console": "find-console-log ."
+  }
+}
+
+```
+
 ## Notes
 
 - The script skips the `node_modules` folder to avoid unnecessary processing.
