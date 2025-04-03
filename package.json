@@ -1,5 +1,5 @@
 {
-  "name": "console-log-finder",
+  "name": "console.log-finder",
   "version": "1.0.1",
   "description": "A script to find console.log statements in JavaScript and TypeScript files.",
   "main": "index.js",
