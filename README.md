@@ -14,35 +14,10 @@
 You can install the library directly from NPM:
 
 ```bash
-npm install console-log-finder
+npm install console-log-finder --save-dev
 ```
 
-## Usage as CLI
-
-After installation, you can use the CLI command to scan your project:
-
-```bash
-npx find-console-log [directory]
-```
-
-- Replace `[directory]` with the path to the directory you want to scan.
-- If no directory is specified, the current working directory will be scanned.
-
-### Example
-
-To scan the current directory:
-
-```bash
-npx find-console-log .
-```
-
-To scan a specific directory:
-
-```bash
-npx find-console-log /path/to/your/project
-```
-
-or make your local command
+make your local command
 
 ```bash
 
