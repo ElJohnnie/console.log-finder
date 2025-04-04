@@ -3,42 +3,38 @@
 const fs = require('fs');
 const path = require('path');
 
-function exists(filePath) {
-  try {
-    return fs.existsSync(filePath);
-  } catch (err) {
-    console.error(`Error checking existence of ${filePath}:`, err);
-    return false;
-  }
+const ignoredDirs = ['node_modules', 'dist', 'build', '.next', 'out'];
+
+function isIgnoredDir(dirName) {
+  return ignoredDirs.includes(dirName);
 }
 
 function findConsoleLogs(dir) {
   let filesWithLogs = [];
-  const ignoredDirs = ['node_modules', 'dist', 'build', '.next', 'out'];
 
   try {
-    const files = fs.readdirSync(dir);
+    const entries = fs.readdirSync(dir, { withFileTypes: true });
 
-    for (const file of files) {
-      const fullPath = path.join(dir, file);
+    for (const entry of entries) {
+      const fullPath = path.join(dir, entry.name);
+      console.log(`🔍 Scanning: ${fullPath}`);
 
-      if (ignoredDirs.some(ignoredDir => fullPath.includes(ignoredDir))) {
-        continue;
-      }
-
-      const stat = fs.statSync(fullPath);
-
-      if (stat.isDirectory()) {
+      if (entry.isDirectory()) {
+        if (isIgnoredDir(entry.name)) continue;
         filesWithLogs = filesWithLogs.concat(findConsoleLogs(fullPath));
-      } else if (stat.isFile() && (file.endsWith('.js') || file.endsWith('.ts'))) {
-        const content = fs.readFileSync(fullPath, 'utf-8');
-        if (content.includes('console.log')) {
-          filesWithLogs.push(fullPath);
+      } else if (entry.isFile() && /\.(js|ts|jsx|tsx)$/.test(entry.name)) {
+        try {
+          const content = fs.readFileSync(fullPath, 'utf-8');
+          if (content.includes('console.log')) {
+            filesWithLogs.push(fullPath);
+          }
+        } catch (err) {
+          console.error(`Error reading file ${fullPath}:`, err.message);
         }
       }
     }
   } catch (err) {
-    console.error(`Error reading directory ${dir}:`, err);
+    console.error(`Error reading directory ${dir}:`, err.message);
   }
 
   return filesWithLogs;
@@ -46,16 +42,18 @@ function findConsoleLogs(dir) {
 
 const projectDir = process.argv[2] ? path.resolve(process.argv[2]) : path.resolve(process.cwd());
 
-if (exists(projectDir)) {
-  console.log(`Scanning for console.log in: ${projectDir}`);
-  const files = findConsoleLogs(projectDir);
+console.log(`📁 Scanning for console.log in: ${projectDir}`);
 
-  if (files.length > 0) {
-    console.log('Found console.log statements in the following files:');
-    files.forEach(file => console.log(`- ${file}`));
-  } else {
-    console.log('No console.log statements found in the project.');
-  }
+if (!fs.existsSync(projectDir)) {
+  console.error('❌ Project directory not found!');
+  process.exit(1);
+}
+
+const result = findConsoleLogs(projectDir);
+
+if (result.length) {
+  console.log('\n⚠️  Found console.log in the following files:');
+  result.forEach(file => console.log(' -', file));
 } else {
-  console.error('Project directory not found!');
+  console.log('✅ No console.log statements found.');
 }
