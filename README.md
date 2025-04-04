@@ -31,8 +31,7 @@ make your local command
 
 ## Notes
 
-- The script skips the `node_modules` folder to avoid unnecessary processing.
-- It only scans files with `.js` and `.ts` extensions.
+- The script skips the `node_modules` and build folders to avoid unnecessary processing.
 
 ## License
 
