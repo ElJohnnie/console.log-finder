@@ -4,6 +4,13 @@ const fs = require('fs');
 const path = require('path');
 
 const ignoredDirs = ['node_modules', 'dist', 'build', '.next', 'out'];
+let hadError = false;
+
+const args = process.argv.slice(2);
+const allowConsole = args.includes('--allow-console');
+
+const targetDirArg = args.find(arg => !arg.startsWith('--'));
+const projectDir = targetDirArg ? path.resolve(targetDirArg) : path.resolve(process.cwd());
 
 function isIgnoredDir(dirName) {
   return ignoredDirs.includes(dirName);
@@ -17,7 +24,6 @@ function findConsoleLogs(dir) {
 
     for (const entry of entries) {
       const fullPath = path.join(dir, entry.name);
-      console.log(`🔍 Scanning: ${fullPath}`);
 
       if (entry.isDirectory()) {
         if (isIgnoredDir(entry.name)) continue;
@@ -30,17 +36,17 @@ function findConsoleLogs(dir) {
           }
         } catch (err) {
           console.error(`Error reading file ${fullPath}:`, err.message);
+          hadError = true;
         }
       }
     }
   } catch (err) {
     console.error(`Error reading directory ${dir}:`, err.message);
+    hadError = true;
   }
 
   return filesWithLogs;
 }
-
-const projectDir = process.argv[2] ? path.resolve(process.argv[2]) : path.resolve(process.cwd());
 
 console.log(`📁 Scanning for console.log in: ${projectDir}`);
 
@@ -51,9 +57,21 @@ if (!fs.existsSync(projectDir)) {
 
 const result = findConsoleLogs(projectDir);
 
+if (hadError) {
+  console.error('\n❌ Script failed due to read errors.');
+  process.exit(1);
+}
+
 if (result.length) {
   console.log('\n⚠️  Found console.log in the following files:');
   result.forEach(file => console.log(' -', file));
+
+  if (!allowConsole) {
+    console.error('\n❌ Found console.log statements. Please remove them.');
+    process.exit(1);
+  } else {
+    console.log('\nℹ️  console.log is allowed via --allow-console flag.');
+  }
 } else {
   console.log('✅ No console.log statements found.');
 }
