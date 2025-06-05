@@ -1,6 +1,6 @@
 # Console Log Finder
 
-`console-log-finder` is an NPM library that scans a given directory (and its subdirectories) for JavaScript (`.js`) and TypeScript (`.ts`) files containing `console.log` statements. It helps developers identify and remove unnecessary `console.log` calls from their codebase.
+`console.log-finder` is an NPM library that scans a given directory (and its subdirectories) for JavaScript (`.js`) and TypeScript (`.ts`) files containing `console.log` statements. It helps developers identify and remove unnecessary `console.log` calls from their codebase.
 
 ## Features
 
@@ -14,7 +14,7 @@
 You can install the library directly from NPM:
 
 ```bash
-npm install console-log-finder --save-dev
+npm install console.log-finder --save-dev
 ```
 
 make your local command
