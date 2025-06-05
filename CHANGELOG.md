@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 
 ## [1.0.4] - 2025-04-04
+### Updated
+- Readme file
+
+## [1.0.4] - 2025-04-04
 ### Added
 - Create changelog file.
 
