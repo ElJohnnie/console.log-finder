@@ -39,4 +39,4 @@ This project is licensed under the MIT License.
 
 ## NPM Package
 
-You can find the package on NPM: [console-log-finder](https://www.npmjs.com/package/console-log-finder)
+You can find the package on NPM: [console.log-finder](https://www.npmjs.com/package/console.log-finder)
